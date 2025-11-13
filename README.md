@@ -30,7 +30,9 @@ We have a data set that describes dampened oscillations with a nonlinear drag te
 
 ## Method 1: Vanilla Neural ODE model (no physics):
 We can model the equation by assuming no physics, and fit a neural network to a generic second order equation 
+
 $$\ddot{x} = f{^\theta}(x, \dot{x}).$$
+
 We will call this the "vanilla neural ODE".
 
 ## Method 2: Physics-informed Neural ODE model:
