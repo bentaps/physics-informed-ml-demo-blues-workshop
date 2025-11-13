@@ -65,7 +65,7 @@ def generate_dissipative_pendulum_data(t_span=(0, 100), dt=0.1, spring_const=5.0
     return time, positions, velocities, accelerations
 
 
-def split_and_plot_dataset(data, train_frac=0.4, val_frac=None, show_plot=True):
+def split_and_plot_dataset(data, train_frac=0.4, val_frac=None, show_plot=True, filename=None):
     """
     Split t,x,v,a into train/val and plot the entire dataset with highlighted regions.
     
@@ -124,6 +124,8 @@ def split_and_plot_dataset(data, train_frac=0.4, val_frac=None, show_plot=True):
     axes.legend(handles=legend_handles, loc='upper right')
     axes.set_title('Training + validation data')
     plt.tight_layout()
+    if filename:
+        plt.savefig(filename)
     plt.show()
 
     return (train_x, train_v, train_a, train_t), (val_x, val_v, val_a, val_t)
@@ -172,8 +174,8 @@ def train_vector_field(
     data_train,
     data_val,
     device=None,
-    num_epochs=5000,
-    print_every=500,
+    num_epochs=500,
+    plot_every=10,
     lr=0.01,
     best_val=float("inf"),
     generate_gif=False,
@@ -188,7 +190,7 @@ def train_vector_field(
         data_val: Tuple of (val_x, val_v, val_a, val_t) validation data
         device: Torch device (default: 'cpu')
         num_epochs: Number of training epochs (default: 5000)
-        print_every: Frequency of printing/plotting progress (default: 500)
+        plot_every: Frequency of printing/plotting progress (default: 500)
         lr: Learning rate (default: 0.01)
         best_val: Initial best validation loss (default: inf)
         generate_gif: Whether to save training progress as animated GIF (default: False)
@@ -263,7 +265,7 @@ def train_vector_field(
                     best_state = copy.deepcopy(model.state_dict())
             
             # Print and plot progress
-            if (epoch + 1) % print_every == 0:
+            if (epoch + 1) % plot_every == 0:
                 title = f"Epoch [{epoch + 1}/{num_epochs}] | Train Loss: {loss.item():.2e} | Val Loss: {val_loss.item():.2e}"
                 clear_output(wait=True)
                 

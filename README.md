@@ -1,29 +1,7 @@
-# Results: Training Progress and Model Comparison
+# Physics informed neural ODE demonstration
 
-You can run this notebook on Google collab by pressing this link: [tinyurl.com/blues-ai-workshop](https://tinyurl.com/blues-ai-workshop)
+## You can run this notebook on Google collab by pressing this link: [tinyurl.com/blues-ai-workshop](https://tinyurl.com/blues-ai-workshop)
 
-Below are animated GIFs showing the training loss curves and validation predictions for:
-
-**Vanilla Neural ODE model (no physics):**
-<p align="center">
-	<img src="figs/training_progress_vanilla.gif" alt="Vanilla Model Training" width="62%">
-	<img src="figs/vanilla_model_test_set_predictions.png" alt="Vanilla Model Training" width="36%">
-</p>
- 
-**Physics-Informed Neural ODE model:**
-<p align="center">
-	<img src="figs/training_progress_physics.gif" alt="Physics-Informed Model Training" width="62%">
-	<img src="figs/physics_model_test_set_predictions.png" alt="Physics-Informed Model Training" width="36%">
-</p>
-
-
-Notice how the physics model achieves lower validation error and more stable long-term predictions, even with limited data.
-
-# Physics-Informed Machine Learning: Learning Dynamical Systems
-
-Learn how to combine physical knowledge with machine learning to estimate system parameters and predict dynamics from sparse data.
-
-## Quick Start
 
 ### Main Notebook
 **`physics_informed_ode.ipynb`** — Complete pedagogical walkthrough demonstrating:
@@ -31,24 +9,7 @@ Learn how to combine physical knowledge with machine learning to estimate system
 - **Physics-Informed Model**: Decomposes acceleration into known physics + learned residuals
 - **Parameter Recovery**: Estimates spring constant $K$ and damping coefficient $C_0$ from data
 
-### Core Idea
-
-Instead of learning the full acceleration $\ddot{x} = f(x, \dot{x})$ with a neural network, we use physics:
-
-$$\ddot{x} = \underbrace{-Kx - C_0\dot{x}}_{\text{Known Physics}} + \underbrace{f(\dot{x})}_{\text{Learned Residual}}$$
-
-This structure dramatically improves:
-- **Data efficiency**: Fewer parameters to learn
-- **Interpretability**: $K$ and $C_0$ have physical meaning
-- **Generalization**: Physics constraints stabilize long-term predictions
-
-## Key Files
-
-- **`physics_informed_ode.ipynb`** — Tutorial notebook (start here)
-- **`models.py`** — Model definitions (`VanillaModel`, `PhysicsInformedModel`)
-- **`utils.py`** — Training loops and visualization utilities
-
-## Installation
+### Installation
 
 ```bash
 pip install -r requirements.txt
@@ -59,8 +20,42 @@ Run the notebook in Jupyter:
 jupyter notebook physics_informed_ode.ipynb
 ```
 
-## Learning Objectives
+## Problem:  
+We have a data set that describes dampened oscillations with a nonlinear drag term, such as a mass-spring system in water. The data consists of acceleration, velocity and position measurements for one initial condition: $\{\ddot{x}(t_i), \dot{x}(t_i), x(t_i)\}_{i=1}^N$ and is plotted below.
+<p align="center">
+	<img src="figs/figure.png" alt="Vanilla Model Training" width="20%">
+	<img src="figs/dataset.png" alt="Vanilla Model Training" width="46%">
+</p>
 
-- Understand when and why physics-informed learning outperforms pure data-driven approaches
-- Apply this framework to your own dynamical systems (ODEs, PDEs, control systems, etc.)
-- Recover unknown physical parameters from experimental data
+
+## Method 1: Vanilla Neural ODE model (no physics):
+We can model the equation by assuming no physics, and fit a neural network to a generic second order equation 
+$$\ddot{x} = f{^\theta}(x, \dot{x}).$$
+We will call this the "vanilla neural ODE".
+
+## Method 2: Physics-informed Neural ODE model:
+We can assume that the governing ordinary differential equation (ODE) is of the (still rather general) form 
+$$\ddot{x} = k^\theta x + F^\theta(\dot{x}),$$
+where $F^\theta$ is some unknown drag force, and $k^\theta$ is a spring constant that we can learn from the data. As $F^\theta$ and $k^\theta$ are unknown, we can fit them from the data using a neural network for $F$ and a learnable parameter for $k$. This yields the physics-informed model. 
+
+
+## Training the neural networks
+We optimise the parameters of the neural networks on the loss function 
+$$L_{vanil.} = \sum_i \| \ddot{x}-f{^\theta}(x, \dot{x}) \|^2,$$
+for all the $\{\ddot{x}(t_i), \dot{x}(t_i), x(t_i)\}_{i=1}^N$ in the training data. For the physics-informed model we use: 
+$$L_{phys} = \sum_i \| \ddot{x}-k^\theta x - F^\theta(\dot{x}) \|^2,$$
+
+Below are animated GIFs showing the training loss curves and validation predictions:
+### Vanilla Neural ODE model (no physics):
+<p align="center">
+	<img src="figs/training_progress_vanilla.gif" alt="Vanilla Model Training" width="62%">
+	<img src="figs/vanilla_model_test_set_predictions.png" alt="Vanilla Model Training" width="36%">
+</p>
+ 
+### Physics-Informed Neural ODE model:
+<p align="center">
+	<img src="figs/training_progress_physics.gif" alt="Physics-Informed Model Training" width="62%">
+	<img src="figs/physics_model_test_set_predictions.png" alt="Physics-Informed Model Training" width="36%">
+</p>
+
+Notice how the physics model achieves lower validation error and more accurate generalisation, even with limited data.
