@@ -1,5 +1,7 @@
 # Results: Training Progress and Model Comparison
 
+You can run this notebook on Google collab by pressing this link: [tinyurl.com/blues-ai-workshop](tinyurl.com/blues-ai-workshop)
+
 Below are animated GIFs showing the training loss curves and validation predictions for:
 
 **Vanilla Neural ODE model (no physics):**
