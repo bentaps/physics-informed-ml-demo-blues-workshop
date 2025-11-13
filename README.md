@@ -21,7 +21,7 @@ jupyter notebook physics_informed_ode.ipynb
 ```
 
 ## Problem:  
-We have a data set that describes dampened oscillations with a nonlinear drag term, such as a mass-spring system in water. The data consists of acceleration, velocity and position measurements for one initial condition: $\{\ddot{x}(t_i), \dot{x}(t_i), x(t_i)\}_{i=1}^N$ and is plotted below.
+We have a data set that describes dampened oscillations with a nonlinear drag term, such as a mass-spring system in water. The data consists of acceleration, velocity and position measurements for one initial condition: $\{(\ddot{x}(t_i), \dot{x}(t_i), x(t_i))\}_{i=1}^N$  and is plotted below.
 <p align="center">
 	<img src="figs/figure.png" alt="Vanilla Model Training" width="20%">
 	<img src="figs/dataset.png" alt="Vanilla Model Training" width="46%">
@@ -35,14 +35,19 @@ We will call this the "vanilla neural ODE".
 
 ## Method 2: Physics-informed Neural ODE model:
 We can assume that the governing ordinary differential equation (ODE) is of the (still rather general) form 
+
 $$\ddot{x} = k^\theta x + F^\theta(\dot{x}),$$
+
 where $F^\theta$ is some unknown drag force, and $k^\theta$ is a spring constant that we can learn from the data. As $F^\theta$ and $k^\theta$ are unknown, we can fit them from the data using a neural network for $F$ and a learnable parameter for $k$. This yields the physics-informed model. 
 
 
 ## Training the neural networks
 We optimise the parameters of the neural networks on the loss function 
+
 $$L_{vanil.} = \sum_i \| \ddot{x}-f{^\theta}(x, \dot{x}) \|^2,$$
-for all the $\{\ddot{x}(t_i), \dot{x}(t_i), x(t_i)\}_{i=1}^N$ in the training data. For the physics-informed model we use: 
+
+for all the $\{(\ddot{x}(t_i), \dot{x}(t_i), x(t_i))\}_{i=1}^N$ in the training data. For the physics-informed model we use: 
+
 $$L_{phys} = \sum_i \| \ddot{x}-k^\theta x - F^\theta(\dot{x}) \|^2,$$
 
 Below are animated GIFs showing the training loss curves and validation predictions:
