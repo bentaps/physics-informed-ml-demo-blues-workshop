@@ -31,17 +31,16 @@ We have a data set that describes dampened oscillations with a nonlinear drag te
 ## Method 1: Vanilla Neural ODE model (no physics):
 We can model the equation by assuming no physics, and fit a neural network to a generic second order equation 
 
-$$\ddot{x} = f{^\theta}(x, \dot{x}).$$
+$$\ddot{x} = f{^\theta}(x, \dot{x}),$$
 
-We will call this the "vanilla neural ODE".
+where $f{^\theta}$ is a neural network. We will call this the "vanilla neural ODE".
 
 ## Method 2: Physics-informed Neural ODE model:
 We can assume that the governing ordinary differential equation (ODE) is of the (still rather general) form 
 
-$$\ddot{x} = k^\theta x + F^\theta(\dot{x}),$$
+$$\ddot{x} = -k^\theta x + F^\theta(\dot{x}),$$
 
-where $F^\theta$ is some unknown drag force, and $k^\theta$ is a spring constant that we can learn from the data. As $F^\theta$ and $k^\theta$ are unknown, we can fit them from the data using a neural network for $F$ and a learnable parameter for $k$. This yields the physics-informed model. 
-
+where $F^\theta$ is a neural network modelling the drag force, and $k^\theta$ is a spring constant that we can learn from the data. This yields the physics-informed model. 
 
 ## Training the neural networks
 We optimise the parameters of the neural networks on the loss function 
