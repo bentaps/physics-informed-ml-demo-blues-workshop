@@ -1,5 +1,7 @@
 # Physics informed neural ODE demonstration
 
+This repo contains a demonstration on physics-informed machine learning, and was made for educational purposes for the BLUES SFI workshop 2025. 
+
 ## You can run this notebook on Google collab by pressing this link: [tinyurl.com/blues-ai-workshop](https://tinyurl.com/blues-ai-workshop)
 
 
